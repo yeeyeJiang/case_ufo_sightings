@@ -12,17 +12,17 @@ This is the case in my course which is markable , for it's my first time to acco
 ## sth to say
 >When teacher assigned this case ,I took it serious. And it cost about 3 days to do this.
 
-I began the case with very limited knowledge on R . To realize every periodical target , I refered to tutorials, books ,Internet, as well as read source codes of R functions. 
+>I began the case with very limited knowledge on R . To realize every periodical target , I refered to tutorials, books ,Internet, as well as read source codes of R functions. 
 
 For instance, to come out with ways of reading  every single character of a string , I went over source code of function "as.Date.character" thinking of note that "as.Date.character" is able to identify every character of a string , there would be some codes inspiring me. 
 
 Then ,function "strptime" was found out . Furthermore ,the class of function begun with "str-" emerged .At last , I picked "strsplit" to realize my identification ,ideally.    
 
->From the aspect of complexity , I have realized the case's purpose on first 500 ,first 10000 ,full dataset ,successively.
+From the aspect of complexity , I have realized the case's purpose on first 500 ,first 10000 ,full dataset ,successively.
 
->By doing this case ,I have a more profound understanding of explory learning and get a sense of achivement.
+By doing this case ,I have a more profound understanding of explory learning and get a sense of achivement.
 
->But , to my most regret, when teacher asked ,in the class, whether there was anybody having tried to accomplish ,or better, finished the assignment, there was no one raising hand INCLUDING MEEEEEEE!!!!!
+But , to my most regret, when teacher asked ,in the class, whether there was anybody having tried to accomplish ,or better, finished the assignment, there was no one raising hand INCLUDING MEEEEEEE!!!!!
 
 Im just too shy to speak out in class.I have been so regretful and do not feel better till NOW .
 
