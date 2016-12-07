@@ -1,15 +1,21 @@
 # case_ufo_sightings
-This was the case in my course which was markable , for it have been my first time to accomplish a case.   
+** This was the case in my course which was markable , for it have been my first time to accomplish a case. **  
+
 ## Case info.
 - Dataset : UFO-sighting records throughout the world
 - Purpose : output the plot in file named "ufo_sightings"
 
-## annotation
+## Annotation
 - "ufo_sightings.pdf" -> case purpose
 - "Number of UFO sightings by Month−Year and U.S. State (1990−2010).pdf" -> my final result
 - "Number of UFO sightings by Month−Year and U.S. State (1980−2001).pdf" -> my result of first stage(first 10000 obs.)
 - "ufo(first 10000 obs.).R" -> R code for the first 10000 obs.
 - "ufo(full data).R" -> R code for the full data
+
+## Remarks
+- The codes are somewhat not concise , because I wanted to preserve my original train of thought , in contrast to  improvements  which would be made afterards.
+
+- Comments amid codes are, partly in Chinese ,partly in English. Its embarrassed ,due to there being some bugs in Input Method. 
 
 ## sth to say
 When teacher assigned this case ,I took it serious. And it cost about 3 days to do this.
