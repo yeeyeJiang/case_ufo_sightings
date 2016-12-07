@@ -13,7 +13,7 @@
 - "ufo(full data).R" -> R code for the full data
 
 ## Remarks
-- The codes are somewhat not concise , because I wanted to preserve my original train of thought , in contrast to  improvements  which would be made afterards.
+- The codes are somewhat not concise , because I wanted to preserve my original train of thought , in contrast to  improvements  which would be made afterwards.
 
 - Comments amid codes are, partly in Chinese ,partly in English. Its embarrassed ,due to there being some bugs in Input Method. 
 
