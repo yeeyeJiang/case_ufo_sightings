@@ -5,7 +5,7 @@
 - Dataset : UFO-sighting records throughout the world
 - Purpose : output the plot in file named "ufo_sightings"
 
-## Annotation
+## Annotations
 - "ufo_sightings.pdf" -> case purpose
 - "Number of UFO sightings by Month−Year and U.S. State (1990−2010).pdf" -> my final result
 - "Number of UFO sightings by Month−Year and U.S. State (1980−2001).pdf" -> my result of first stage(first 10000 obs.)
