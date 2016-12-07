@@ -1,5 +1,5 @@
 # case_ufo_sightings
-** This was the case in my course which was markable , for it have been my first time to accomplish a case. **  
+**This was the case in my course which was markable , for it have been my first time to accomplish a case.**  
 
 ## Case info.
 - Dataset : UFO-sighting records throughout the world
