@@ -22,7 +22,7 @@ When teacher assigned this case ,I took it serious. And it cost about 3 days to 
 
 I began the case with very limited knowledge on R . To achive every periodical targets , I refered to tutorials, books ,Internet, as well as read source codes of R functions. 
 
-For instance, to come out with ways of reading  every single character of a string , I went over source code of function "as.Date.character" thinking of note that "as.Date.character" is able to identify every character of a string , there would be some codes inspiring me. 
+For instance, to come out with the ways of reading  every single character of a string , I went over source code of function "as.Date.character" thinking of now that "as.Date.character" is able to identify every character of a string , there would be some codes inspiring me. 
 
 Then ,function "strptime" was found out . Furthermore ,the class of function begun with "str-" emerged .At last , I picked "strsplit" to realize my identification ,ideally.    
 
