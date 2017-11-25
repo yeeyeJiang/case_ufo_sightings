@@ -3,7 +3,7 @@
 
 ## Case info.
 - Dataset : UFO-sighting records throughout the world
-- Purpose : output the plot in file named "ufo_sightings"
+- Purpose : Visualize for the following analysis
 
 ## Annotations
 - "ufo_sightings.pdf" -> case purpose
