@@ -1,4 +1,4 @@
-setwd("C:\\Users\\jiang\\Desktop\\ÑĞ¾¿Éú\\ÑĞ¶şÉÏ\\DataAnalysis-master\\¿ÎÌÃÁ·Ï°")
+#setwd("C:\\Users\\jiang\\Desktop\\ç ”ç©¶ç”Ÿ\\ç ”äºŒä¸Š\\DataAnalysis-master\\è¯¾å ‚ç»ƒä¹ ")
 library(dplyr)
 library(ggplot2)
 library(zoo)
@@ -9,12 +9,7 @@ library(zoo)
 raw <- read.table("ufo_awesome.tsv",header = F ,
                        sep = "\t" , 
                        stringsAsFactors = F ,
-                       fileEncoding = "UTF-8" ,
-                       # colClasses = c("numeric" , "numeric"), as.is = T  --> 
-                          #ÉÏÃæÃüÁî¿ÉÒÔ·Ö±æÊÇ·ñÈÕÆÚÊı¾İÖĞ»ìÈëÁËÎÄ±¾Êı¾İ
-                          #Error in scan() expected 'a real', got 'IowaCity,IA'
-                          #ËµÃ÷È·Êµ»ìÈëÁË£¬ÏÈ°´ÕÕÎÄ±¾¶ÁÈ¡£¬ÔÙÔÚÊı¾İÇåÏ´ÕâÒ»²½´¦Àí
-                      
+                       fileEncoding = "UTF-8" ,                      
                        fill = T ,
                        na.strings = "" , 
                        col.names = c("date" , "enddate" ,
@@ -24,21 +19,10 @@ raw <- read.table("ufo_awesome.tsv",header = F ,
                   )
 
 ##cleansing data----
-#×îÄÑµÄÊÇ£ºformulate criteria £¬distinguish boundary between normal& UNnormal
-
-#³öÏÖÎÊÌâ£ºÀàĞÍ²»·û£¨¾ÍÊÇÉÏÃæcolClassËùÖ¸,ÒÔ¼°Ò»Ğ©½á¹¹ĞÎ×´²»·û,Èç:ÈÕÆÚ³öÏÖ0000£©
-#                 -> Âß¼­ÉÏµÄÒì³£Öµ -> NA
-
-#knowledge!
-#******ÌáÈ¡×Ö·û´®º¯Êı******
-#substr() ÔÚ×Ö·û´®ÖĞÌáÈ¡×Ó´® 
-#nchar()  ÌáÈ¡×Ö·û´®³¤¶È
-#grep()   ÇóÄ³¶Î×Ö·ûÔÚ×Ö·û´®ÏòÁ¿£¨²»ÊÇµ¥¸ö×Ö·û´®£©ÖĞµÄÎ»ÖÃ
-#**************************
 
 dataCleaned <- raw[1:3] 
 
-###´¦Àídate±äÁ¿ÖĞµÄÀàĞÍ²»·û_______________v
+###handle the problem brought by non-uniformed class in the variable "data" _______________v
 
 dateNA <- data.frame(
                 rownum = 
@@ -53,44 +37,38 @@ for (i in 1:nrow(dateNA))
 dataCleaned[dateNA$rownum , 1] <- dateNA$date
 rm(dateNA , i)
 
-#ÒÔÉÏ£¬¹ØÓÚdateµÄÀàĞÍ²»·û´¦ÀíÍê±Ï£¬
-#µ«ÊÇ»¹ÓĞÒ»¸ö²»×ã£¡£¡£¡
-#¾ÍÊÇÓĞµÄdateÀïÃæ´¢´æ×ÅÆäËû±äÁ¿µÄĞÅÏ¢£¬¸ù¾İÒÔÉÏ´¦ÀíÊÇÖ±½Ó×ö³ÉNA_______^
+#__________________________________________________________________________________________^
 
 # detect logical outliers in date
 range(dataCleaned$date , na.rm = T) #--> normal(only correct for first 10000)
 
-#Ò»°ã£¬dateÓĞ´íµÄ£¬ºóÃæµÄlocationÒ²»áÓĞ´í£¬·´Õı×îºóÊÇÓÃstate³é³öÒªÓÃÊı¾İ£¬
-#ËùÒÔÕâÀïÂß¼­Òì³£²»´¦Àí
-#it's covenient for analysis to put date in the format of "19900809" 
+#it's easier for analysis to put date in the format of "19900809" 
 
 
-###´¦ÀílocationµÄÀàĞÍ²»·û__________________v
+##handle the problem brought by non-uniformed class in the variable "location"_____________v
 
 summary(
   
-  nchar( #Í¨¹ı×ÖÊı¼ì²âÒì³£Çé¿ö
+  nchar( #detect the outliers via field length
     dataCleaned$location
     )
 )
-#**************result(for the first 10000)**************
-#   Min.  1st Qu.  Median    Mean   3rd Qu.    Max.    NA's 
-#   2.0    12.0     15.0     18.8     19.0    2819.0    43 
-#*******************************************************
+
 boxplot(
   nchar( 
   dataCleaned$location
 ))
  
-hist(  nchar( #Í¨¹ı×ÖÊı¼ì²âÒì³£Çé¿ö
+hist(  nchar(
           dataCleaned$location
             ) ,
        xlim = c(0 , 80) ,
-       ylim = c(0 , 10) , #ylim ´Ó2000£¬1000£¬200,40,20 ÍùÏÂÖğ²½¼ì²é
+       ylim = c(0 , 10) , #ylim goes downwards in the way like 2000ï¼Œ1000ï¼Œ200,40,20 
        breaks = seq(0 , 3000 , by = 5)
 )
 
-#according to hists, results ,we need ¼ì²é65ÒÔÉÏµÄ×ÖÊı£¬ºÍ5ÒÔÏÂµÄ×ÖÊı
+#according to hists, results ,we need to check those observations whose field lengths are greater than 65, also the ones below 5
+
 #but, take empirical knowledge into consideration ,
 #a location can hardly be streched out within 5 words ,
 #so ,go through locations with nchars below 10 words .
@@ -101,33 +79,26 @@ hist(  nchar(
 xlim = c(65 , 70) ,
 ylim = c(0 , 20) , 
 breaks = seq(0 , 16000 , by = 0.5) ,
-main = "location×ÖÊıÔÚ65¸öÒÔÉÏµÄ¹Û²âÖµÆµÊı" ,
-xlab = "location×ÖÊı"
+main = "locationå­—æ•°åœ¨65ä¸ªä»¥ä¸Šçš„è§‚æµ‹å€¼é¢‘æ•°" , #frequency where the fields length is over 65
+xlab = "locationå­—æ•°"
 )
 
 pi <- 0.05 
-#pi¿ÉÒÔÀí½âÎª¾­Ñé³ö´íÂÊ£¬ÓÃ±´Ò¶Ë¹µÄË¼Ïë£¬
-#ÎÒÃÇ´ÓÒÔÍùµÄ¾­ÑéÀïµÃµ½ÕâÖÖÊı¾İÒ»°ãµÄ³ö´íÂÊÔÚ¶àÉÙ
-#È»ºóÓÃÔÚÕâ¸öÊı¾İÉÏ£¬ÆµÂÊĞ¡ÓÚÕâ¸ö piµÄ±äÁ¿ÊÓÎªÓĞ´í±äÁ¿
+#parameter pi can be taken as error rate
+#according to the hint got from Bayes framework, we can give a empirical proper value to pi
 
 hist(  nchar(
   dataCleaned$location
 ) ,
 xlim = c(0 , 10) ,
-ylim = c(0 , nrow(raw) * pi) ,  #Í¨¹ı²»¶Ïµ÷ÕûxºÍyµÄ·¶Î§£¬³õ²½ÕÒ³ö·Ö½çÖµ
-                                #½øÒ»²½ÕÒ³ö·Ö½çÖµĞèÒªÍ¨¹ı²é¿´Ô­Ê¼ĞÅÏ¢
-                                #ŞÏŞÎµÄÊÇ£¬ÔÚÕâÒ»±ê×¼ÏÂºÜÄÑÕÒ³öÇåÎúµÄ±ß½ç
-                                #Ö»ÄÜÈ¨ºâÉáÆúÉÙÁ¿»ìÈëÒì³£ÖµÖĞµÄÕıÈ·Öµ
+ylim = c(0 , nrow(raw) * pi) ,  #this step is mutual, one need to tune the "xlim" and "ylim" several times till rough values being found
 
-        #ÔÚ10000¹Û²âÖµÊ±£¬¿ÉÒÔÍ¨¹ı²»¶Ïµ÷ÕûyµÄ·¶Î§ÕÒ³ö²»Á¬Ğøµã
-        #µ«ÊÇfull dataÊ±£¬Òì³£Öµ·Ç³£¶à£¨¿ÉÄÜÉÏÇ§£©£¬ÕâÊ±ºòÈô»¹ÓÃ10000Ê±ºòµÄ
-        #yÉÏÏŞ10ÉõÖÁ100È¥¿´£¬¶¼ÊÇÁ¬ĞøµÄ
 breaks = seq(0 , 16000 , by = 0.5)  ,
-main = "location×ÖÊıÔÚ10¸öÒÔÏÂµÄ¹Û²âÖµÆµÊı" ,
-xlab = "location×ÖÊı"
+main = "locationå­—æ•°åœ¨10ä¸ªä»¥ä¸‹çš„è§‚æµ‹å€¼é¢‘æ•°" , #frequency where the fields length is below 10
+xlab = "locationå­—æ•°"
 )
 
-#·¢ÏÖ66ÒÔÉÏºÍ8ÒÔÏÂ³öÏÖÆµÂÊ²»Á¬ĞøµÄ¹Û²âÖµ£¬¿¼ÂÇÎªÒì³£Öµ
+#the smoothness in frenquency stop at 66 and 8, so the ones below 8 and over 66 are reasonable taken as outliers
 
 dataCleaned %>%
   filter(nchar(location) %in% 66:70 ) #--> normal&unnormal both exist
@@ -166,26 +137,19 @@ boxplot(
 
 rm(locatNA)
 
-#locationµÄÀàĞÍ²»·û´¦ÀíÍê±Ï__________________^
+#__________________________________________________________________________________________________^
 
 ##reading data----
-
-#ÈôÒÔÏÂ´úÂëÖĞÓÃdf[1]ÌáÈ¡ÁĞ¶ø²»ÊÇdf[,1]
-#ÔòËùÓĞ´úÂë¶¼ÔËĞĞ²»ÁË
-#ÒòÎªdf[i]ÌáÈ¡³öÀ´µÄÊÇdata.frame,ºóĞøµÄ¸³Öµ»á°Ñdfµ±×öÒ»¸öÕûÌåÈ¥¸³Öµ
-#df[,i]ÌáÈ¡³öµÄÊÇvalueµÄ¼¯ºÏ£¬¸úc()µÄ½á¹ûÊÇÒ»ÑùµÄ
-#ÕâÖÖ¸ñÊ½ÎÊÌâÒª×¢Òâ£¬±ÈÈçlistÈ¡³öµÄÔªËØ»¹ÊÇlist
 
 #ufoSight[1:2] <- as.Date.character(dataCleaned[,1:2] , format = "%Y%m%d")
 #dataCleaned$yearmon <- format(as.yearmon(dataCleaned[,1]) , "%Y-%m")
 
-x <- strsplit(dataCleaned[,3] , ",") #strsplit³öÀ´µÄ½á¹ûÊÇlist
-                            #Èô²»Ïë¿ÉÒÔÓÃº¯Êıunlist()È¥µôlist½á¹¹
+x <- strsplit(dataCleaned[,3] , ",") 
 for(i in 1:length(x)){
   n <- length(x[[i]])
   if(n < 3){
-  dataCleaned$city[i] <- x[[i]][1] #Èç¹û¼ÇÂ¼Ã»ÓĞ¶ººÅ£¬È«²¿µÄĞÅÏ¢
-                               #(including state or country)¾Í»á·Öµ½cityÀï
+  dataCleaned$city[i] <- x[[i]][1] 
+                               
   dataCleaned$state[i] <- x[[i]][2]
   }
   else{
@@ -205,43 +169,24 @@ stateNA <- data.frame(
     which( nchar(dataCleaned$state) != 3
          )
  )
-stateNA[2:6] <- dataCleaned[stateNA$rownum , ] #È«²¿¶¼ÊÇÆäËû¹ú¼ÒµÄobs.
+stateNA[2:6] <- dataCleaned[stateNA$rownum , ] 
 
-#many observations is of other countries, triggering variety of texting formats
+#many observations are of other countries, triggering chaos of texting format
 #for example,
 #country names are put inside ()
 #country names are put outside () ,or even there is no ()
 #"," is not used for separating city&country ,but for site&city
 #some contain only site ,but states can be interpreted in terms of the info.
-#ÓĞµÄ³öÏÖµÄÕæÊµµØµã±¾À´¾ÍºÜÄ£ºı£¬¼ÇÂ¼µÄµØµãĞÅÏ¢Ö»ÄÜÓÃ¾ä×ÓÃèÊö
-# ,È»ºócity³öÏÖµÄÊÇÇ°°ë¾ä£¬stateÀïÊÇ¾ä×ÓµÄºó°ë¾ä
-#ÓĞµÄÓĞºÃ¶à¸ö¶ººÅ£¬ÓĞµÄÓÖÃ»ÓĞ¶ººÅ·Ö¸ô
-#»¹ÓĞ¸üŞÏŞÎµÄ£¬ÓĞµÄ´Ó´å¶ù¿ªÊ¼Ğ´£¬È»ºó¾Í±ä³É£ºA´å,BÏØ(È»ºóºóÃæ²»Ò»¶¨³öÏÖ¹ú¼Ò)
-#...
-#but, thanks to magority of the U.S's obs. being in tidy format ..haha
+#but, thanks to magority are of the U.S's obvs. being in tidy format 
 
-#ËùÒÔ£¬Ä¿Ç°²ÉÈ¡µÄ·½·¨ÎŞÊÓ£¬·´ÕıºóÃæÒ²ÊÇ´ÓËùÓĞ¹Û²âÖµÀïÓÃstateµÄÃû×ÖÌáÈ¡obs.
-#µ«ÊÇ£¬ÕâÃ´×öÒ²ÓĞÈ±Ïİ£º
-#1. ÓĞµÄ¹Û²âÖµÃ»ÓĞlocationĞÅÏ¢£¬µ«ÆäÊµËûÓĞ¿ÉÄÜÊôÓÚÃÀ¹úµÄ
-#2. ÓĞµÄ¹Û²âÖµÓĞcityµÄĞÅÏ¢£¬µ«ÊÇÃ»ÓĞstateµÄĞÅÏ¢£¬¿ÉÒÔÈÏÎªÅĞ¶Ï³öËûÊôÓÚÃÀ¹ú 
-#       ¡ª¡ª> µ«Í¨¹ıä¯ÀÀstateNAÀïstate == NAµÄ¹Û²âÖµ£¬·¢ÏÖ²»´æÔÚÕâÖÖÇé¿ö
-#¹Ê£¬¿¼ÂÇµ½¸´ÔÓĞÔ£¬Ä¿Ç°ÏÈÕâÑù°É£¡£¡£¡¸Â¸Â~
-
-rm(stateNA) #Óä¿ìµØÉ¾µôstateNA WITHOUT DONING ANYTHING
-
-#****************×Ü½áÒ»ÏÂ****************
-#locationµÄÒì³£Öµ´¦Àí£ºÖ÷ÒªÊÇ½â¾ödetail»ìÈëlocationµÄÎÊÌâ£¬Í¨¹ınchar·¢ÏÖ
-#stateµÄÒì³£Öµ£ºÖ÷ÒªÊÇÓÉÓÚ´æÔÚÆäËû¹ú¼ÒµÄ¹Û²âÖµ£¬Í¨¹ı¿´stateNAÀï¾ßÌåÇé¿ö
-#dateµÄÒì³£Öµ£ºÖ÷ÒªÊÇ»ìÈëÎÄ±¾ĞÍ±äÁ¿£¬Í¨¹ıcolClassÖ´ĞĞ³ö´í·¢ÏÖ
-
-#¹ØÓÚstateµÄÀàĞÍºÍÂß¼­Òì³£Öµ´¦Àí½áÊø__________________________________^
+rm(stateNA) #delete stateNA WITHOUT DONING ANYTHING
+#_____________________________________________________________________^
 
 #group by state & yearmon----
 
 dataCleaned %>%
   filter(nchar(state) == 3) -> ufoSight 
 
-#ËäÈ»stateÖ»ÓĞÁ½¸ö×Ö·û£¬µ«ÊÇÀïÃæ°üº¬ÆäËû¹ú¼Ò³ÇÊĞµÄËõĞ´
 #state50 <- sort(unique(ufoSight$state))
 #fix(state50)
 
@@ -318,12 +263,3 @@ ggplot(dtForPic)+
     #panel.grid.major = element_line(color = "gray3" , size = 0.1),
     #axis.text = element_text(color = "black", face = "bold" , size = 8)
     )
- 
-
-
-
-
-
-
-
-
