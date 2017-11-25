@@ -1,4 +1,4 @@
-setwd("C:\\Users\\jiang\\Desktop\\�о���\\�ж���\\DataAnalysis-master\\������ϰ")
+setwd("C:\\Users\\jiang\\Desktop\\研究生\\研二上\\DataAnalysis-master\\课堂练习")
 library(dplyr)
 library(ggplot2)
 library(zoo)
@@ -11,9 +11,9 @@ raw <- read.table("ufo_awesome.tsv",header = F ,
                        stringsAsFactors = F ,
                        fileEncoding = "UTF-8" ,
                        # colClasses = c("numeric" , "numeric"), as.is = T  --> 
-                          #����������Էֱ��Ƿ����������л������ı�����
+                          #上面命令可以分辨是否日期数据中混入了文本数据
                           #Error in scan() expected 'a real', got 'IowaCity,IA'
-                          #˵��ȷʵ�����ˣ��Ȱ����ı���ȡ������������ϴ��һ������
+                          #说明确实混入了，先按照文本读取，再在数据清洗这一步处理
                       
                        fill = T ,
                        na.strings = "" , 
@@ -25,19 +25,19 @@ raw <- read.table("ufo_awesome.tsv",header = F ,
 
 ##cleansing data----
 
-#�������⣺���Ͳ�������������colClass��ָ,�Լ�һЩ�ṹ��״����,��:���ڳ���0000��
-#                 -> �߼��ϵ��쳣ֵ -> NA
+#出现问题：类型不符（就是上面colClass所指,以及一些结构形状不符,如:日期出现0000）
+#                 -> 逻辑上的异常值 -> NA
 
 #knowledge!
-#******��ȡ�ַ�������******
-#substr() ���ַ�������ȡ�Ӵ� 
-#nchar()  ��ȡ�ַ�������
-#grep()   ��ĳ���ַ����ַ������������ǵ����ַ������е�λ��
+#******提取字符串函数******
+#substr() 在字符串中提取子串 
+#nchar()  提取字符串长度
+#grep()   求某段字符在字符串向量（不是单个字符串）中的位置
 #**************************
 
 dataCleaned <- raw[1:3] 
 
-###����date�����е����Ͳ���_______________v
+###处理date变量中的类型不符_______________v
 
 dateNA <- data.frame(
                 rownum = 
@@ -52,23 +52,23 @@ for (i in 1:nrow(dateNA))
 dataCleaned[dateNA$rownum , 1] <- dateNA$date
 rm(dateNA , i)
 
-#���ϣ�����date�����Ͳ���������ϣ�
-#���ǻ���һ�����㣡����
-#�����е�date���洢����������������Ϣ���������ϴ�����ֱ������NA_______^
+#以上，关于date的类型不符处理完毕，
+#但是还有一个不足！！！
+#就是有的date里面储存着其他变量的信息，根据以上处理是直接做成NA_______^
 
 # detect logical outliers in date
 range(dataCleaned$date , na.rm = T) #--> normal(only correct for first 10000)
 
-#һ�㣬date�д��ģ������locationҲ���д��������������state���Ҫ�����ݣ�
-#���������߼��쳣������
+#一般，date有错的，后面的location也会有错，反正最后是用state抽出要用数据，
+#所以这里逻辑异常不处理
 #it's covenient for analysis to put date in the format of "19900809" 
 
 
-###����location�����Ͳ���__________________v
+###处理location的类型不符__________________v
 
 summary(
   
-  nchar( #ͨ����������쳣���
+  nchar( #通过字数检测异常情况
     dataCleaned$location
     )
 )
@@ -81,15 +81,15 @@ boxplot(
   dataCleaned$location
 ))
  
-hist(  nchar( #ͨ����������쳣���
+hist(  nchar( #通过字数检测异常情况
           dataCleaned$location
             ) ,
        xlim = c(0 , 80) ,
-       ylim = c(0 , 10) , #ylim ��2000��1000��200,40,20 �����𲽼��
+       ylim = c(0 , 10) , #ylim 从2000，1000，200,40,20 往下逐步检查
        breaks = seq(0 , 3000 , by = 5)
 )
 
-#according to hists, results ,we need ���65���ϵ���������5���µ�����
+#according to hists, results ,we need 检查65以上的字数，和5以下的字数
 #but, take empirical knowledge into consideration ,
 #a location can hardly be streched out within 5 words ,
 #so ,go through locations with nchars below 10 words .
@@ -98,10 +98,10 @@ hist(  nchar(
   dataCleaned$location
 ) ,
 xlim = c(65 , 70) ,
-ylim = c(0 , 10) , #ylim ��2000��1000��200,40,20 �����𲽼��
+ylim = c(0 , 10) , #ylim 从2000，1000，200,40,20 往下逐步检查
 breaks = seq(0.5 , 3000 , by = 0.5) ,
-main = "location������65�����ϵĹ۲�ֵƵ��" ,
-xlab = "location����"
+main = "location字数在65个以上的观测值频数" ,
+xlab = "location字数"
 )
 
 
@@ -109,13 +109,13 @@ hist(  nchar(
   dataCleaned$location
 ) ,
 xlim = c(0 , 10) ,
-ylim = c(0 , 10) , #ylim ��2000��1000��200,40,20 �����𲽼��
+ylim = c(0 , 10) , #ylim 从2000，1000，200,40,20 往下逐步检查
 breaks = seq(0 , 3000 , by = 0.5)  ,
-main = "location������10�����µĹ۲�ֵƵ��" ,
-xlab = "location����"
+main = "location字数在10个以下的观测值频数" ,
+xlab = "location字数"
 )
 
-#����68���Ϻ�8���³���Ƶ�ʲ������Ĺ۲�ֵ������Ϊ�쳣ֵ
+#发现68以上和8以下出现频率不连续的观测值，考虑为异常值
 
 dataCleaned %>%
   filter(nchar(location) == 68) #--> normal
@@ -142,7 +142,7 @@ locatNA <- data.frame(
     which( nchar(dataCleaned$location) < 8 )
  )
 locatNA[2:4] <- dataCleaned[locatNA$rownum , ]
-locatNA[5, 4] <- ",Spain" #��ʵ�Ӻ���Ĵ����ַ���֪����������Ҫ
+locatNA[5, 4] <- ",Spain" #其实从后面的处理手法可知，这句命令不需要
 locatNA[8, 4] <- "Kiev,Ukraine"
 locatNA[12, 4] <- NA
 locatNA[14, 4] <- ",NV"
@@ -157,29 +157,29 @@ boxplot(
 
 rm(locatNA)
 
-#location�����Ͳ����������__________________^
+#location的类型不符处理完毕__________________^
 
 ##reading data----
 ufoSight <- data.frame(replicate(4,1:nrow(dataCleaned)))
 colnames(ufoSight) <- c("date" , "yearmon" , "city" , "state")
 
-#�����´�������df[1]��ȡ�ж�����df[,1]
-#�����д��붼���в���
-#��Ϊdf[i]��ȡ��������data.frame,�����ĸ�ֵ���df����һ������ȥ��ֵ
-#df[,i]��ȡ������value�ļ��ϣ���c()�Ľ����һ����
-#���ָ�ʽ����Ҫע�⣬����listȡ����Ԫ�ػ���list
+#若以下代码中用df[1]提取列而不是df[,1]
+#则所有代码都运行不了
+#因为df[i]提取出来的是data.frame,后续的赋值会把df当做一个整体去赋值
+#df[,i]提取出的是value的集合，跟c()的结果是一样的
+#这种格式问题要注意，比如list取出的元素还是list
 
 ufoSight[1] <- as.Date.character(dataCleaned[,1] , format = "%Y%m%d")
 #ufoSight[2] <- as.Date.character(dataCleaned[,2] , format = "%Y%m%d")
 ufoSight[2] <- format(as.yearmon(ufoSight[,1]) , "%Y-%m")
 
-x <- strsplit(dataCleaned[,3] , ",") #strsplit�����Ľ����list
-                            #����������ú���unlist()ȥ��list�ṹ
+x <- strsplit(dataCleaned[,3] , ",") #strsplit出来的结果是list
+                            #若不想可以用函数unlist()去掉list结构
 for(i in 1:length(x)){
   n <- length(x[[i]])
   if(n < 3){
-  ufoSight[,3][i] <- x[[i]][1] #�����¼û�ж��ţ�ȫ������Ϣ
-                               #(including state or country)�ͻ�ֵ�city��
+  ufoSight[,3][i] <- x[[i]][1] #如果记录没有逗号，全部的信息
+                               #(including state or country)就会分到city里
   ufoSight[,4][i] <- x[[i]][2]
   }
   else{
@@ -211,35 +211,35 @@ ufoSight[9165 , 4] <- " NV"
 #country names are put outside () ,or even there is no ()
 #"," is not used for separating city&country ,but for site&city
 #some contain only site ,but states can be interpreted in terms of the info.
-#�еĳ��ֵ���ʵ�ص㱾���ͺ�ģ������¼�ĵص���Ϣֻ���þ�������
-# ,Ȼ��city���ֵ���ǰ��䣬state���Ǿ��ӵĺ���
-#�е��кö�����ţ��е���û�ж��ŷָ�
-#���и����εģ��еĴӴ����ʼд��Ȼ��ͱ�ɣ�A��,B��(Ȼ����治һ�����ֹ���)
+#有的出现的真实地点本来就很模糊，记录的地点信息只能用句子描述
+# ,然后city出现的是前半句，state里是句子的后半句
+#有的有好多个逗号，有的又没有逗号分隔
+#还有更尴尬的，有的从村儿开始写，然后就变成：A村,B县(然后后面不一定出现国家)
 #...
 #but, thanks to magority of the U.S's obs. being in tidy format ..haha
 
-#���ԣ�Ŀǰ��ȡ�ķ������ӣ���������Ҳ�Ǵ����й۲�ֵ����state��������ȡobs.
-#���ǣ���ô��Ҳ��ȱ�ݣ�
-#1. �еĹ۲�ֵû��location��Ϣ������ʵ���п�������������
-#2. �еĹ۲�ֵ��city����Ϣ������û��state����Ϣ��������Ϊ�жϳ����������� 
-#       ����> ��ͨ�����stateNA��state == NA�Ĺ۲�ֵ�����ֲ������������
-#�ʣ����ǵ������ԣ�Ŀǰ�������ɣ������¸�~
+#所以，目前采取的方法无视，反正后面也是从所有观测值里用state的名字提取obs.
+#但是，这么做也有缺陷：
+#1. 有的观测值没有location信息，但其实他有可能属于美国的
+#2. 有的观测值有city的信息，但是没有state的信息，可以认为判断出他属于美国 
+#       ——> 但通过浏览stateNA里state == NA的观测值，发现不存在这种情况
+#故，考虑到复杂性，目前先这样吧！！！嘎嘎~
 
-rm(stateNA) #����ɾ��stateNA WITHOUT DONING ANYTHING
+rm(stateNA) #愉快地删掉stateNA WITHOUT DONING ANYTHING
 
-#****************�ܽ�һ��****************
-#location���쳣ֵ��������Ҫ�ǽ��detail����location�����⣬ͨ��nchar����
-#state���쳣ֵ����Ҫ�����ڴ����������ҵĹ۲�ֵ��ͨ����stateNA��������
-#date���쳣ֵ����Ҫ�ǻ����ı��ͱ�����ͨ��colClassִ�г�������
+#****************总结一下****************
+#location的异常值处理：主要是解决detail混入location的问题，通过nchar发现
+#state的异常值：主要是由于存在其他国家的观测值，通过看stateNA里具体情况
+#date的异常值：主要是混入文本型变量，通过colClass执行出错发现
 
-#����state�����ͺ��߼��쳣ֵ��������__________________________________^
+#关于state的类型和逻辑异常值处理结束__________________________________^
 
 #group by state & yearmon----
 
 ufoSight %>%
   filter(nchar(state) == 3) ->ufoSight 
 
-#��Ȼstateֻ�������ַ���������������������ҳ��е���д
+#虽然state只有两个字符，但是里面包含其他国家城市的缩写
 #state50 <- sort(unique(ufoSight$state))
 #fix(state50)
 
