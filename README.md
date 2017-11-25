@@ -29,9 +29,3 @@ Then ,function "strptime" was found out . Furthermore ,the class of function beg
 From the aspect of complexity , I have realized the case's purpose on first 500 ,first 10000 ,full dataset ,successively.
 
 By doing this case ,I have a more profound understanding of explory learning and get a sense of achivement.
-
-But , to my most regret, when teacher asked ,in the class, whether there was anybody having tried to accomplish ,or better, finished the assignment, there was no one raising hand INCLUDING MEEEEEEE!!!!!
-
-Im just too shy to speak out in class.I have been so regretful and do not feel better till NOW .
-
-You may feel unbelivable,but it did occur to me. I can not overcome my fearness to speak in front of the public.
