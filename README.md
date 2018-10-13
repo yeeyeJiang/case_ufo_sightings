@@ -29,3 +29,4 @@ Then ,function "strptime" was found out . Furthermore ,the class of function beg
 From the aspect of complexity , I have realized the case's purpose on first 500 ,first 10000 ,full dataset ,successively.
 
 By doing this case ,I have had a more profound understanding of explory learning and got a sense of achivement.
+A line I wrote on my local computer
